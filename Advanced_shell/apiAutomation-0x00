@@ -1,6 +1,6 @@
 #!/bin/bash
 
-URL="https://pokeapi.co/api/v2/pokemon/"
+URL="https://pokeapi.co/api/v2/pokemon/Pikachu"
 
 RESPONSE=$(curl --request GET \
   --url $URL \
