@@ -1,0 +1,25 @@
+#!/bin/bash
+
+URL="https://pokeapi.co/api/v2/pokemon/"
+
+RESPONSE=$(curl --request GET \
+  --url $URL \
+  -w "\n%{http_code}" \
+  -s)
+
+
+RESPONSE_CODE=$(tail -n1 <<< "$RESPONSE")
+
+if [ "$RESPONSE_CODE" -eq 200 ]; then
+
+  sed '$ d' <<< "$RESPONSE" > data.json
+else
+  echo $RESPONSE_CODE > errors.txt
+fi
+
+# data=$(curl -s "https://pokeapi.co/api/v2/pokemon/")
+
+# echo "$data" > data.json
+# STATUS_CODE
+# curl -s -o $STATUS_CODE --write-out "%{http_code}" "https://pokeapi.co/api/v2/pokemon/" > data.json
+# echo "HTTP Status Code: $STATUS_CODE"
