@@ -13,6 +13,6 @@ do
         echo "Fetching data for $pokemon ..."
         sleep 1s
         file=pokemon_data/$pokemon.json
-        echo "$RESPONSE" > $file
+        sed '$ d' <<< "$RESPONSE" > $file
         echo "Saved data to $file ✅"
 done
