@@ -1,9 +1,10 @@
 #!/bin/bash
 
 name=$(jq -r '.name' data.json)
-height=$(jq -r '.height' data.json | awk '{print $1/10}')
-weight=$(jq -r '.weight' data.json | awk '{print $1/10}')
+formatted_height=$(jq -r '.height' data.json | awk '{print $1/10}')
+formatted_weight=$(jq -r '.weight' data.json | awk '{print $1/10}')
 type=$(jq -r '.types[].type.name' data.json | awk '{print toupper(substr($0, 1, 1)) tolower(substr($0, 2))}')
 
+echo "$name is of type $type, weighs ${formatted_weight}kg, and is ${formatted_height}m tall."
 
-echo "$name is of type $type, weighs ${weight}kg, and is ${height}m tall."
+# pikachu is of type Electric, weighs 6kg, and is 0.4m tall.
