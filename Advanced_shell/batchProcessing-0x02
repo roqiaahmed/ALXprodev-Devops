@@ -1,18 +1,30 @@
 #!/bin/bash
 
-pokemon_list=("Bulbasaur" "Ivysaur" "Venusaur" "Charmander" "Charmeleon")
+pokemon_list=("Bulbasaur" "Ivysaur" "Venusaur" "Charmander" "Charmeleon" )
+ERROR_LOG="error.log"
 
-for pokemon in "${pokemon_list[@]}"
-do
-  URL="https://pokeapi.co/api/v2/pokemon/$pokemon"
-  echo $pokemon
+for pokemon in "${pokemon_list[@]}"; do
+  for i in {1..3}; do
+    echo "Fetching data for $pokemon ..."
+
+    URL="https://pokeapi.co/api/v2/pokemon/$pokemon"
     RESPONSE=$(curl --request GET \
         --url $URL \
         -w "\n%{http_code}" \
         -s)
-        echo "Fetching data for $pokemon ..."
-        sleep 1s
-        file=pokemon_data/$pokemon.json
-        sed '$ d' <<< "$RESPONSE" > $file
-        echo "Saved data to $file ✅"
+
+    RESPONSE_CODE=$(tail -n1 <<< "$RESPONSE")
+
+    if [ "$RESPONSE_CODE" -eq 200 ]; then
+      file=pokemon_data/$pokemon.json
+      sed '$ d' <<< "$RESPONSE" > $file
+      echo "Saved data to $file ✅"
+      break
+    fi
+
+    if [ "$i" -eq 3 ]; then
+     "$URL $RESPONSE" 2>> "$ERROR_LOG"
+    fi
+  done
+  sleep 1s
 done
