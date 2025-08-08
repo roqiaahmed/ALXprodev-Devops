@@ -1,0 +1,36 @@
+#!/bin/bash
+
+MAX_POOL_SIZE=5
+pokemon_list=("Bulbasaur" "Ivysaur" "Venusaur" "Charmander" "Charmeleon" )
+CURRENT_POOL_SIZE=0
+
+fetch_and_save(){
+    pokemon=$1
+    url=$2
+    dir=$3
+
+    RESPONSE=$(curl --request GET \
+        --url "$url/$pokemon" \
+        -w "\n%{http_code}" \
+        -s)
+
+    file=$dir/$pokemon.json
+    sed '$ d' <<< "$RESPONSE" > $file
+    echo "Saved data to $file ✅"
+}
+
+for pokemon in "${pokemon_list[@]}"
+do
+    # will not exit the while loop until CURRENT_POOL_SIZE be less than MAX_POOL_SIZE
+    while [ $CURRENT_POOL_SIZE -ge $MAX_POOL_SIZE ]; do
+        CURRENT_POOL_SIZE=$(jobs | wc -l)
+    done
+
+    url="https://pokeapi.co/api/v2/pokemon"
+    dir="pokemon_data"
+
+    fetch_and_save "$pokemon" "$url" "$dir" &
+    CURRENT_POOL_SIZE=$(jobs | wc -l)
+done
+    wait
+    exit 0
