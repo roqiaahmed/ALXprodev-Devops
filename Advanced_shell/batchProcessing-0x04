@@ -33,4 +33,4 @@ do
     CURRENT_POOL_SIZE=$(jobs | wc -l)
 done
     wait
-    exit 0
+    kill
